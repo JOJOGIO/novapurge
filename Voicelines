@@ -1,0 +1,101 @@
+-- By JoJo#2494
+-- Script Name: CustomVoicelines
+-- https://discord.gg/jojow
+
+assert(getrawmetatable)
+gmt = getrawmetatable(game)
+setreadonly(gmt, false)
+old = gmt.__namecall
+gmt.__namecall =
+	newcclosure(
+		function(self, ...)
+		local args = {...}
+		if tostring(args[1]) == "BreathingHAMON" then
+			return
+		elseif tostring(args[1]) == "TeleportDetect" then
+			return
+		elseif tostring(args[1]) == "CHECKER_1" then
+			return
+		elseif tostring(args[1]) == "CHECKER" then
+			return
+		elseif tostring(args[1]) == "GUI_CHECK" then
+			return
+		elseif tostring(args[1]) == "OneMoreTime" then
+			return
+		elseif tostring(args[1]) == "checkingSPEED" then
+			return
+		elseif tostring(args[1]) == "BANREMOTE" then
+			return
+		elseif tostring(args[1]) == "PERMAIDBAN" then
+			return
+		elseif tostring(args[1]) == "KICKREMOTE" then
+			return
+		elseif tostring(args[1]) == "BR_KICKPC" then
+			return end
+    return old(self, ...)
+end)
+
+local OriginalKeyUpValue = 0
+
+function StopAudio()
+	game:GetService("Players").LocalPlayer.Character.LowerTorso.BOOMBOXSOUND:Stop()
+end
+
+function Stop(ID, Key)
+	local cor = coroutine.wrap(function()
+	wait(game:GetService("Players").LocalPlayer.Character.LowerTorso.BOOMBOXSOUND.TimeLength-0.1)
+		if game:GetService("Players").LocalPlayer.Character.LowerTorso.BOOMBOXSOUND.SoundId == "rbxassetid://"..ID and OriginalKeyUpValue == Key then
+			StopAudio()
+		end
+    end)
+cor()
+end
+
+function PlaySound(ID, STOP)
+	if game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("[Boombox]") then
+		local Tool = nil
+		game:GetService("Players").LocalPlayer.Backpack["[Boombox]"].Parent = game:GetService("Players").LocalPlayer.Character
+		game:GetService("ReplicatedStorage").MainEvent:FireServer("Boombox", ID)
+		game:GetService("Players").LocalPlayer.Character["[Boombox]"].RequiresHandle = false
+          if game:GetService("Players").LocalPlayer.Character["[Boombox]"]:FindFirstChild("Handle") then
+            game:GetService("Players").LocalPlayer.Character["[Boombox]"].Handle:Destroy()
+          end
+          game:GetService("Players").LocalPlayer.Character["[Boombox]"].Parent = game:GetService("Players").LocalPlayer.Backpack
+          game:GetService("Players").LocalPlayer.PlayerGui.MainScreenGui.BoomboxFrame.Visible = false
+          if Tool ~= true then
+              if Tool then
+                  Tool.Parent = game:GetService("Players").LocalPlayer.Character
+              end
+          end
+          if STOP == true then
+            game:GetService("Players").LocalPlayer.Character.LowerTorso:WaitForChild("BOOMBOXSOUND")
+                local cor = coroutine.wrap(function()
+                  repeat wait() until game:GetService("Players").LocalPlayer.Character.LowerTorso.BOOMBOXSOUND.SoundId == "rbxassetid://"..ID and game:GetService("Players").LocalPlayer.Character.LowerTorso.BOOMBOXSOUND.TimeLength > 0.0001
+                  OriginalKeyUpValue = OriginalKeyUpValue+1
+                  Stop(ID, OriginalKeyUpValue)
+				end)
+			cor()
+		end
+	end
+end
+
+function Chat(NovaPurge)
+	local A_1 = NovaPurge
+	local A_2 = "All"
+	local Event = game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest
+	Event:FireServer(A_1, A_2)
+end
+
+function Voiceline(NOVAPURGE,NOVAPURGE1,NOVAPURGE2,NOVAPURGE3)
+	game:GetService("Players").LocalPlayer.Chatted:Connect(function(msg)
+		if msg:lower() == NOVAPURGE1:lower() then
+			PlaySound(tonumber(NOVAPURGE))
+			if NOVAPURGE2 then
+				pcall(function()
+					wait(tonumber(NOVAPURGE3))
+					Chat(NOVAPURGE2)
+				end)
+			end
+		end
+	end)
+end
