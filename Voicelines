@@ -51,7 +51,7 @@ function Stop(ID, Key)
 cor()
 end
 
-function PlaySound(ID)
+function PlaySound(ID, STOP)
 	if game:GetService("Players").LocalPlayer.Backpack:FindFirstChild("[Boombox]") then
 		local Tool = nil
 		game:GetService("Players").LocalPlayer.Backpack["[Boombox]"].Parent = game:GetService("Players").LocalPlayer.Character
@@ -67,6 +67,7 @@ function PlaySound(ID)
                   Tool.Parent = game:GetService("Players").LocalPlayer.Character
               end
           end
+          if STOP == true then
             game:GetService("Players").LocalPlayer.Character.LowerTorso:WaitForChild("BOOMBOXSOUND")
                 local cor = coroutine.wrap(function()
                   repeat wait() until game:GetService("Players").LocalPlayer.Character.LowerTorso.BOOMBOXSOUND.SoundId == "rbxassetid://"..ID and game:GetService("Players").LocalPlayer.Character.LowerTorso.BOOMBOXSOUND.TimeLength > 0.0001
@@ -76,7 +77,8 @@ function PlaySound(ID)
 			cor()
 		end
 	end
-	
+end
+
 function Chat(NovaPurge)
 	local A_1 = NovaPurge
 	local A_2 = "All"
@@ -87,7 +89,7 @@ end
 function Voiceline(NOVAPURGE,NOVAPURGE1,NOVAPURGE2,NOVAPURGE3)
 	game:GetService("Players").LocalPlayer.Chatted:Connect(function(msg)
 		if msg:lower() == NOVAPURGE1:lower() then
-			PlaySound(tonumber(NOVAPURGE))
+			PlaySound(tonumber(NOVAPURGE),true)
 			if NOVAPURGE2 then
 				pcall(function()
 					wait(tonumber(NOVAPURGE3))
